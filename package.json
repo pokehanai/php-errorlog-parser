@@ -1,6 +1,6 @@
 {
   "name": "php-errorlog-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/pokehanai/php-errorlog-parser.git"
