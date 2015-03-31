@@ -115,7 +115,7 @@ var PhpErorLogParser = (function (_EventEmitter) {
                 this.record.time = new Date(timeString);
                 this.record.lines = [line];
                 var match = line.match(/PHP ([A-Z].*?)(?: error)?:/);
-                this.record.level = match ? match[1] : null;
+                this.record.level = match ? match[1].toLowerCase() : null;
             }
         },
         flush: {
