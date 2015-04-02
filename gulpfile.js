@@ -11,14 +11,8 @@ gulp.task("build", function () {
         .pipe(gulp.dest("."));
 });
 
-gulp.task('watch', function () {
-    gulp.run('build');
-
-    gulp.watch('src/**/*.js', function(event) {
-        gulp.run('js');
-    })
+gulp.task('watch', ['build'], function () {
+    gulp.watch('src/**/*.js', ['build']);
 });
 
-gulp.task('default', function () {
-    gulp.run('watch');
-});
+gulp.task('default', ['watch']);
