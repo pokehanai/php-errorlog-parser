@@ -41,6 +41,11 @@ export default class PhpErorLogParser extends EventEmitter {
         }
 
         if (record.stacktrace) {
+            // omit empty line
+            if (!hasTime && line === '') {
+                return;
+            }
+
             // in stack trace
             if (this.oldFasionStackTrace) {
                 if (hasTime) {
@@ -58,17 +63,17 @@ export default class PhpErorLogParser extends EventEmitter {
             }
         }
 
-        if (!hasTime && line === 'Stack trace:') {
+        if (!hasTime && (line === "Stack trace:" || line === "Call Stack:")) {
             debug('starting stack trace(old fasion)');
             this.oldFasionStackTrace = true;
-            record.lines.push(line);
+            record.stacktraceHeader = line;
             record.stacktrace = [];
             return;
         }
         if (line === 'PHP Stack trace:') {
             debug('starting stack trace');
             this.oldFasionStackTrace = false;
-            record.lines.push(line);
+            record.stacktraceHeader = line;
             record.stacktrace = [];
             return;
         }
@@ -103,10 +108,21 @@ export default class PhpErorLogParser extends EventEmitter {
         debug('flush', record);
         var record = this.record;
         if (record.time && 0 < record.lines.length) {
+            this.normalize(record);
             this.emit('record', record);
             record.time = null;
             record.lines = [];
             record.stacktrace = null;
+        }
+    }
+
+    normalize(record) {
+        if (record.stacktrace) {
+            // remove empty string from tail of lines
+            var lines = record.lines;
+            for (var i = lines.length - 1; 0 < i && lines[i] === ''; --i) {
+                lines.pop();
+            }
         }
     }
 }
